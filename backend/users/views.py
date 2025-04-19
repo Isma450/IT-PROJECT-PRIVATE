@@ -115,7 +115,7 @@ class RefreshTokenView(APIView):
             )
 
 class LogoutView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         refresh_token = request.COOKIES.get('refresh_token')
@@ -134,7 +134,7 @@ class LogoutView(APIView):
         except Exception as e:
             logger.error(f"Erreur lors de la déconnexion: {str(e)}")
             return Response({'error': 'Erreur lors de la déconnexion'}, status=status.HTTP_400_BAD_REQUEST)
-            
+
 class PasswordResetRequestView(APIView):
     permission_classes = [AllowAny]
 
