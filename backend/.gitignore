@@ -20,14 +20,6 @@ build/
 .env.test.local
 .env.production.local
 
-# Fichiers de base de données SQLite (si vous utilisez SQLite)
-*.sqlite3
-db.sqlite3
-
-# Fichiers de migration Django (facultatif, à ajuster selon vos besoins)
-**/migrations/*.py
-!**/migrations/__init__.py
-
 # Fichiers temporaires et logs
 *.log
 logs/
@@ -41,10 +33,6 @@ temp/
 *.sublime-project
 *.sublime-workspace
 
-# Fichiers de dépendances locales
-pip-wheel-metadata/
-Pipfile.lock
-
 # Fichiers de couverture de tests
 .coverage
 coverage.xml
@@ -55,12 +43,6 @@ htmlcov/
 *.cache
 .cache/
 *.bak
-
-# Fichiers générés par macOS
-.DS_Store
-
-# Fichiers de documentation générés
-docs/_build/
 
 # Dossiers spécifiques à votre projet (ajustez selon vos besoins)
 media/

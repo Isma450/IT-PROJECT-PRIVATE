@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_ratelimit',
     'users',
+    'posts',
 ]
 
 MIDDLEWARE = [
@@ -130,11 +131,21 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'logs/auth.log'),
         },
+        'posts_file': {  
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/posts.log'),
+        },
     },
     'loggers': {
         'users': {
             'handlers': ['file'],
             'level': 'WARNING',
+            'propagate': True,
+        },
+        'posts': {  
+            'handlers': ['posts_file'],
+            'level': 'INFO',
             'propagate': True,
         },
     },
