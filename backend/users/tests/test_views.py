@@ -144,7 +144,6 @@ class LogoutViewTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('error', response.data)
 
-
 class PasswordResetRequestViewTests(TestCase):
     def setUp(self):
         self.client = APIClient()
