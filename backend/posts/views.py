@@ -4,9 +4,10 @@ from rest_framework import status, permissions
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from .models import Post, Comment, Reaction
-from .serializers import PostSerializer, CommentSerializer, ReactionSerializer
+from .models import Post, Comment, Reaction , Tag
+from .serializers import PostSerializer, CommentSerializer, ReactionSerializer , TagSerializer
 from users.models import User
+from .permissions import IsAuthenticatedByRefreshToken
 from users.serializers import UserSerializer
 import logging
 
@@ -19,14 +20,13 @@ class CommentPagination(PageNumberPagination):
     max_page_size = 100
 
 class PostListView(APIView):
-    permission_classes = [permissions.AllowAny] #à tous
+    permission_classes = [permissions.AllowAny] 
 
     def get(self, request):
-        # que posts publiés
-        posts = Post.objects.filter(published_at__lte=timezone.now())
-        for post in posts:
-            lines = post.content.splitlines()[:5]
-            post.content = "\n".join(lines)
+        tag_slug = request.query_params.get('tag', None)
+        posts = Post.objects.all()
+        if tag_slug:
+            posts = posts.filter(tags__slug=tag_slug)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -39,7 +39,7 @@ class PostDetailView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class PostCreateView(APIView):
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]  #  admins
+    permission_classes = [IsAuthenticatedByRefreshToken, permissions.IsAdminUser]
 
     def post(self, request):
         serializer = PostSerializer(data=request.data)
@@ -50,8 +50,24 @@ class PostCreateView(APIView):
         logger.warning(f"Échec de la création du post : {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class PostUpdateView(APIView):
+    permission_classes = [IsAuthenticatedByRefreshToken, permissions.IsAdminUser]
+
+    def put(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        if post.author != request.user and not request.user.is_superuser:
+            return Response({'error': 'Vous n’êtes pas autorisé à modifier ce post.'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = PostSerializer(post, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            logger.info(f"Post mis à jour par {request.user.username}: {post.title}")
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        logger.warning(f"Échec de la mise à jour du post : {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class CommentCreateView(APIView):
-    permission_classes = [permissions.IsAuthenticated]  
+    permission_classes = [IsAuthenticatedByRefreshToken]  
     def post(self, request, pk):
         post = get_object_or_404(Post, pk=pk, published_at__lte=timezone.now())
         serializer = CommentSerializer(data=request.data)
@@ -63,7 +79,7 @@ class CommentCreateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ReactionToggleView(APIView):
-    permission_classes = [permissions.IsAuthenticated]  
+    permission_classes = [IsAuthenticatedByRefreshToken]  
 
     def post(self, request, pk, emoji):
         post = get_object_or_404(Post, pk=pk, published_at__lte=timezone.now())
@@ -97,3 +113,11 @@ class AboutAuthorView(APIView):
             'author': author_data,
             'posts': posts_data
         }, status=status.HTTP_200_OK)
+
+class TagListView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        tags = Tag.objects.all()
+        serializer = TagSerializer(tags, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
