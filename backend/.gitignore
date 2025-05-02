@@ -1,0 +1,49 @@
+# Fichiers et dossiers Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+env.bak/
+venv.bak/
+*.egg-info/
+dist/
+build/
+
+# Fichiers d'environnement local
+.env
+*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Fichiers temporaires et logs
+*.log
+logs/
+*.log.*
+*.tmp
+temp/
+
+# Fichiers de l'éditeur (VS Code, PyCharm, etc.)
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Fichiers de couverture de tests
+.coverage
+coverage.xml
+*,cover
+htmlcov/
+
+# Fichiers de cache
+*.cache
+.cache/
+*.bak
+
+# Dossiers spécifiques à votre projet (ajustez selon vos besoins)
+media/
+staticfiles
