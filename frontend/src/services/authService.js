@@ -22,6 +22,10 @@ const authService = {
       return response.data;
     } catch (error) {
       console.error('Erreur d\'inscription:', error);
+      // Traitement spécifique des erreurs de validation du backend
+      if (error.response && error.response.status === 400) {
+        throw error.response.data; // Retourne directement les erreurs du backend (username, email, etc.)
+      }
       throw error.response ? error.response.data : { error: 'Erreur de connexion au serveur' };
     }
   },
@@ -49,11 +53,36 @@ const authService = {
 
   logout: async () => {
     try {
-      await axiosInstance.post(`${API_URL}/logout/`, {});
+      // Récupérer le token avant de le supprimer
+      const token = localStorage.getItem('token');
+      
+      // Si pas de token, simplement nettoyer le localStorage sans appel API
+      if (!token) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        return;
+      }
+      
+      // S'assurer que le token est dans les headers pour cette requête
+      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      try {
+        await axiosInstance.post(`${API_URL}/logout/`, {});
+      } catch {
+        // Même en cas d'erreur API, on continue pour nettoyer le localStorage
+        console.log('Erreur API lors de la déconnexion, nettoyage local uniquement');
+      }
+      
+      // Supprimer les informations utilisateur et le token
       localStorage.removeItem('user');
       localStorage.removeItem('token');
+      delete axiosInstance.defaults.headers.common['Authorization'];
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
+      // Malgré l'erreur, on essaie quand même de nettoyer le localStorage
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      delete axiosInstance.defaults.headers.common['Authorization'];
     }
   },
 
