@@ -104,6 +104,7 @@ EMAIL_SSL_CONTEXT = ssl._create_unverified_context()
 # Configuration CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    
 ]
 CORS_ALLOW_CREDENTIALS = True
 
