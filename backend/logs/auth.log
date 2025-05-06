@@ -6,3 +6,9 @@ Erreur lors du rafraÃ®chissement du token: 'int' object has no attribute 'id'
 Erreur lors du rafraÃ®chissement du token: Le jeton a Ã©tÃ© banni
 Échec de connexion pour fleuris: mot de passe incorrect
 Échec de connexion pour fleuris: mot de passe incorrect
+Erreur lors du rafraîchissement du token: Le jeton a été banni
+Échec de connexion: utilisateur mathisfloch29@gmx.fr non trouvé
+Échec de connexion: utilisateur mathisfloch29@gmx.fr non trouvé
+Échec de connexion pour mathis: mot de passe incorrect
+Tentative de rafraîchissement sans refresh token
+Tentative de déconnexion sans refresh token
