@@ -43,6 +43,13 @@ const Navbar = () => {
     { title: 'Déconnexion', action: handleLogout }
   ];
 
+  if (currentUser && currentUser.is_staff) {
+    userSettings.unshift({ 
+      title: 'Créer un article', 
+      action: () => { navigate('/create-post'); setProfileMenuOpen(false); } 
+    });
+  }
+
   return (
     <nav 
       className={`sticky top-0 z-50 transition-all duration-300 ${

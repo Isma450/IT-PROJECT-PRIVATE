@@ -80,3 +80,10 @@ Edition de l'article/commentaire
 Dark/Light mode
 Ajout d’un système d’IA dans la création de contenu:
 Possibilité de demander à une IA d’améliorer/corriger le texte qui a déjà été écrit
+
+Ajout posts
+-> postservice
+->createpost.jsx
+->app jsx
+->navbar
+->adminroute
