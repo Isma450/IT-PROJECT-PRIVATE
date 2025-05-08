@@ -79,7 +79,7 @@ const postService = {
   addComment: async (postId, commentData) => {
     try {
       const response = await axiosInstance.post(
-        `${API_URL}/posts/${postId}/comments/create/`,
+        `${API_URL}/posts/${postId}/comment/`,
         commentData,
         {
           headers: {
@@ -97,10 +97,10 @@ const postService = {
 
   toggleReaction: async (postId, reactionData) => {
     try {
-      const { emoji } = reactionData; // Extraire l'emoji depuis reactionData
+      const { emoji } = reactionData;
       const response = await axiosInstance.post(
-        `${API_URL}/posts/${postId}/reactions/${emoji}/toggle/`,
-        null, // Pas de corps de requête
+        `${API_URL}/posts/${postId}/react/${emoji}/`,
+        null,
         {
           headers: {
             "Content-Type": "application/json",
