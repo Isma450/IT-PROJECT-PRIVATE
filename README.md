@@ -1,6 +1,3 @@
-# IT-PROJECT-PRIVATEVoici ton fichier `README.md` prêt à être copié-collé sur GitHub — proprement structuré en Markdown avec des titres clairs, blocs de code, et sections lisibles :
-
-
 # 📝 Projet : Plateforme de Blog avec Authentification Sécurisée
 
 ## 📌 Description
@@ -176,7 +173,7 @@ backend/
 frontend/
 ├── public/
 ├── src/
-│   ├── components/, context/, services/, utils/
+│   ├── components/, context/, pages/ ,services/, utils/
 │   ├── App.js, index.js
 ├── .env
 ├── package.json
