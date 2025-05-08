@@ -20,10 +20,41 @@ export const initializeAuth = async (setCurrentUser, setLoading) => {
 export const setupTokenRefreshInterceptor = (logoutCallback) => {
   const interceptor = axiosInstance.interceptors.response.use(
     (response) => response,
-    (error) => {
-      if (error.response?.status === 401) {
-        logoutCallback();
-        window.location.href = "/login";
+    async (error) => {
+      const originalRequest = error.config;
+      
+      // Si erreur 401 (non autorisé) et la requête n'a pas déjà été retentée
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        
+        // Si l'erreur est liée à un jeton invalide
+        if (error.response?.data?.code === 'token_not_valid') {
+          try {
+            // Essayer de rafraîchir le jeton
+            const response = await axiosInstance.post('/refresh/');
+            
+            if (response.status === 200 && response.data.access) {
+              // Mettre à jour le jeton dans localStorage
+              const user = JSON.parse(localStorage.getItem('user') || '{}');
+              const updatedUser = {
+                ...user,
+                token: response.data.access
+              };
+              localStorage.setItem('user', JSON.stringify(updatedUser));
+              
+              // Mettre à jour le header d'autorisation pour la requête originale
+              originalRequest.headers['Authorization'] = `Bearer ${response.data.access}`;
+              
+              // Retenter la requête originale avec le nouveau jeton
+              return axiosInstance(originalRequest);
+            }
+          } catch (refreshError) {
+            // Si le rafraîchissement échoue, déconnecter l'utilisateur
+            logoutCallback();
+            window.location.href = "/login";
+            return Promise.reject(refreshError);
+          }
+        }
       }
       return Promise.reject(error);
     }

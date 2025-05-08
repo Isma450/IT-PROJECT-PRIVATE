@@ -29,6 +29,10 @@ const PostDetail = () => {
     }
   };
 
+  const handleBackClick = () => {
+    navigate('/blog'); // Naviguer vers la page d'accueil (liste des posts)
+  };
+
   // Fonction utilitaire pour compter les réactions
   const getReactionCount = (emoji) => {
     return post?.reactions?.filter(r => r.emoji === emoji).length || 0;
@@ -79,25 +83,18 @@ const PostDetail = () => {
 
     setSubmitting(true);
 
-    // Mise à jour optimiste de l'état local
-    const newComment = {
-      id: Date.now(), // ID temporaire
-      content: comment,
-      author: currentUser,
-      created_at: new Date().toISOString()
-    };
-
-    setPost(prev => ({
-      ...prev,
-      comments: [...(prev.comments || []), newComment]
-    }));
-
     try {
+      // Appel API pour ajouter le commentaire
       const updatedPost = await postService.addComment(id, { content: comment });
+      
+      // Mise à jour du post avec les nouvelles données
       setPost(updatedPost);
+      
+      // Réinitialiser le formulaire
       setComment('');
     } catch (err) {
       console.error('Erreur lors de l\'ajout du commentaire:', err);
+      alert(err.error || 'Une erreur est survenue lors de l\'ajout du commentaire');
       // En cas d'erreur, recharger le post pour s'assurer que l'état est cohérent
       fetchPost();
     } finally {
@@ -134,7 +131,19 @@ const PostDetail = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-6">
+        <button
+          onClick={handleBackClick}
+          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+        >
+          <svg className="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Retour aux articles
+        </button>
+      </div>
+      
       <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
         <div className="p-6">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
@@ -155,7 +164,7 @@ const PostDetail = () => {
             {post.tags.map(tag => (
               <span
                 key={tag.id}
-                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
               >
                 {tag.name}
               </span>
@@ -168,45 +177,45 @@ const PostDetail = () => {
                 type="button"
                 onClick={() => handleReaction('LIKE')}
                 disabled={!currentUser}
-                className={`p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                  !currentUser ? 'opacity-50 cursor-not-allowed' : ''
-                } ${hasUserReacted('LIKE') ? 'bg-blue-100 dark:bg-blue-900' : ''}`}
+                className={`flex items-center space-x-1 px-2 py-1 rounded-md transition ${
+                  hasUserReacted('LIKE') 
+                    ? 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200' 
+                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                } ${!currentUser ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                👍
+                <span>👍</span>
+                <span className="text-xs font-medium">{getReactionCount('LIKE')}</span>
               </button>
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                {getReactionCount('LIKE')}
-              </span>
             </div>
             <div className="flex items-center space-x-2">
               <button
                 type="button"
                 onClick={() => handleReaction('LOVE')}
                 disabled={!currentUser}
-                className={`p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                  !currentUser ? 'opacity-50 cursor-not-allowed' : ''
-                } ${hasUserReacted('LOVE') ? 'bg-blue-100 dark:bg-blue-900' : ''}`}
+                className={`flex items-center space-x-1 px-2 py-1 rounded-md transition ${
+                  hasUserReacted('LOVE') 
+                    ? 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200' 
+                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                } ${!currentUser ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                ❤️
+                <span>❤️</span>
+                <span className="text-xs font-medium">{getReactionCount('LOVE')}</span>
               </button>
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                {getReactionCount('LOVE')}
-              </span>
             </div>
             <div className="flex items-center space-x-2">
               <button
                 type="button"
                 onClick={() => handleReaction('HAHA')}
                 disabled={!currentUser}
-                className={`p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                  !currentUser ? 'opacity-50 cursor-not-allowed' : ''
-                } ${hasUserReacted('HAHA') ? 'bg-blue-100 dark:bg-blue-900' : ''}`}
+                className={`flex items-center space-x-1 px-2 py-1 rounded-md transition ${
+                  hasUserReacted('HAHA') 
+                    ? 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200' 
+                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                } ${!currentUser ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                😂
+                <span>😂</span>
+                <span className="text-xs font-medium">{getReactionCount('HAHA')}</span>
               </button>
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                {getReactionCount('HAHA')}
-              </span>
             </div>
           </div>
 
@@ -229,7 +238,7 @@ const PostDetail = () => {
                   <button
                     type="submit"
                     disabled={submitting || !comment.trim()}
-                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 transition-colors"
                   >
                     {submitting ? 'Envoi...' : 'Commenter'}
                   </button>

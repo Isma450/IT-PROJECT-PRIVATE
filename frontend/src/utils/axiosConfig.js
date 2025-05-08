@@ -41,10 +41,12 @@ axiosInstance.interceptors.response.use(
 );
 
 // Fonction pour configurer les headers d'authentification
-export const setupAxiosInterceptors = (getToken) => {
+export const setupAxiosInterceptors = () => {
   axiosInstance.interceptors.request.use(
     (config) => {
-      const token = getToken();
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const token = user.token;
+      
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }

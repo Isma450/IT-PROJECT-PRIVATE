@@ -14,7 +14,11 @@ const authService = {
 
       console.log("Réponse d'inscription:", response.data);
       if (response.data.user) {
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        const userData = {
+          ...response.data.user,
+          token: response.data.access
+        };
+        localStorage.setItem("user", JSON.stringify(userData));
       }
 
       return response.data;
@@ -36,7 +40,11 @@ const authService = {
 
       console.log("Réponse de connexion:", response.data);
       if (response.data.user) {
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        const userData = {
+          ...response.data.user,
+          token: response.data.access
+        };
+        localStorage.setItem("user", JSON.stringify(userData));
       }
 
       return response.data;

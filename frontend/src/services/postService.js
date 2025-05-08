@@ -28,7 +28,9 @@ const postService = {
   createPost: async (postData) => {
     try {
       // Vérification de l'authentification
-      const token = localStorage.getItem('token');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const token = user.token;
+      
       if (!token) {
         throw { error: 'Vous devez être connecté pour créer un article' };
       }
@@ -55,7 +57,13 @@ const postService = {
   // Mettre à jour un post existant
   updatePost: async (id, postData) => {
     try {
-      const token = localStorage.getItem('token');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const token = user.token;
+      
+      if (!token) {
+        throw { error: 'Vous devez être connecté pour modifier un article' };
+      }
+      
       const config = {
         withCredentials: true,
         headers: {
@@ -74,10 +82,17 @@ const postService = {
   // Supprimer un post
   deletePost: async (id) => {
     try {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const token = user.token;
+      
+      if (!token) {
+        throw { error: 'Vous devez être connecté pour supprimer un article' };
+      }
+      
       const config = {
         withCredentials: true,
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         }
       };
       
@@ -91,16 +106,28 @@ const postService = {
   // Ajouter un commentaire à un post
   addComment: async (postId, commentData) => {
     try {
+      // Récupérer le jeton depuis localStorage et s'assurer qu'il est valide
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const token = user.token;
+      
+      if (!token) {
+        throw { error: 'Vous devez être connecté pour ajouter un commentaire' };
+      }
+      
       const config = {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         }
       };
       
-      const response = await axiosInstance.post(`${API_URL}/posts/${postId}/comment/`, commentData, config);
-      return response.data;
+      // Ajouter le commentaire
+      await axiosInstance.post(`${API_URL}/posts/${postId}/comment/`, commentData, config);
+      
+      // Récupérer le post mis à jour avec le nouveau commentaire
+      const updatedPost = await axiosInstance.get(`${API_URL}/posts/${postId}/`);
+      return updatedPost.data;
     } catch (error) {
       throw error.response ? error.response.data : { error: 'Erreur de connexion au serveur' };
     }
@@ -109,22 +136,27 @@ const postService = {
   // Réagir à un post (ajouter/retirer un emoji)
   toggleReaction: async (postId, reactionData) => {
     try {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const token = user.token;
+      
+      if (!token) {
+        throw { error: 'Vous devez être connecté pour réagir à un article' };
+      }
+      
       const config = {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         }
       };
   
       // Effectuer l'appel API pour ajouter ou retirer une réaction
-      const response = await axiosInstance.post(`${API_URL}/posts/${postId}/react/${reactionData.emoji}/`, {}, config);
+      await axiosInstance.post(`${API_URL}/posts/${postId}/react/${reactionData.emoji}/`, {}, config);
   
-      // Récupérer les counts des réactions depuis la réponse
-      const reactionCounts = response.data.reaction_counts;
-  
-      // Retourner les counts des réactions (ou mettre à jour ton état ici)
-      return reactionCounts;  // Cela retourne les counts, et tu pourras les utiliser dans ton UI
+      // Après la réaction, récupérer le post mis à jour
+      const updatedPost = await axiosInstance.get(`${API_URL}/posts/${postId}/`);
+      return updatedPost.data;
     } catch (error) {
       throw error.response ? error.response.data : { error: 'Erreur de connexion au serveur' };
     }
