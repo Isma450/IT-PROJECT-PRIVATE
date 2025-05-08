@@ -30,7 +30,8 @@ const Navbar = () => {
   };
 
   const pages = [
-    { title: 'Accueil', path: '/' }
+    { title: 'Accueil', path: '/' },
+    { title: 'Blog', path: '/blog' }
   ];
   
   const authPages = [
