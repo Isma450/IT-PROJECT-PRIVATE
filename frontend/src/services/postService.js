@@ -99,7 +99,7 @@ const postService = {
         }
       };
       
-      const response = await axiosInstance.post(`${API_URL}/posts/${postId}/comments/`, commentData, config);
+      const response = await axiosInstance.post(`${API_URL}/posts/${postId}/comment/`, commentData, config);
       return response.data;
     } catch (error) {
       throw error.response ? error.response.data : { error: 'Erreur de connexion au serveur' };
@@ -116,9 +116,15 @@ const postService = {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       };
-      
-      const response = await axiosInstance.post(`${API_URL}/posts/${postId}/reactions/`, reactionData, config);
-      return response.data;
+  
+      // Effectuer l'appel API pour ajouter ou retirer une réaction
+      const response = await axiosInstance.post(`${API_URL}/posts/${postId}/react/${reactionData.emoji}/`, {}, config);
+  
+      // Récupérer les counts des réactions depuis la réponse
+      const reactionCounts = response.data.reaction_counts;
+  
+      // Retourner les counts des réactions (ou mettre à jour ton état ici)
+      return reactionCounts;  // Cela retourne les counts, et tu pourras les utiliser dans ton UI
     } catch (error) {
       throw error.response ? error.response.data : { error: 'Erreur de connexion au serveur' };
     }

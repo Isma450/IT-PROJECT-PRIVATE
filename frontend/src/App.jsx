@@ -8,8 +8,10 @@ import ResetPassword from './components/auth/ResetPassword'
 import ResetPasswordConfirm from './components/auth/ResetPasswordConfirm'
 import Profile from './pages/Profile'
 import CreatePost from './pages/CreatePost'
+import BlogCreations from './pages/BlogCreations'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import AdminRoute from './components/auth/AdminRoute'
+import PostDetail from './components/posts/PostDetail'
 
 function App() {
   return (
@@ -24,6 +26,9 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/reset-password/:token" element={<ResetPasswordConfirm />} />
+              <Route path="/blog" element={<BlogCreations />} />
+              <Route path="/posts/:id" element={<PostDetail />} />
+
               
               <Route element={<ProtectedRoute />}>
                 <Route path="/profile" element={<Profile />} />

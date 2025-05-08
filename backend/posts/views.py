@@ -78,28 +78,40 @@ class CommentCreateView(APIView):
         logger.warning(f"Échec de la création du commentaire : {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+from django.db.models import Count
+
 class ReactionToggleView(APIView):
     permission_classes = [IsAuthenticatedByRefreshToken]  
 
     def post(self, request, pk, emoji):
         post = get_object_or_404(Post, pk=pk, published_at__lte=timezone.now())
-        # Valider l'emoji
+
         if emoji not in dict(Reaction.EMOJI_CHOICES).keys():
             logger.warning(f"Emoji invalide {emoji} par {request.user.username}")
             return Response({'error': 'Emoji invalide'}, status=status.HTTP_400_BAD_REQUEST)
         
         reaction = Reaction.objects.filter(post=post, user=request.user, emoji=emoji).first()
         if reaction:
-            
             reaction.delete()
+            action = 'removed'
             logger.info(f"Réaction {emoji} supprimée par {request.user.username} sur le post {post.title}")
-            return Response({'message': 'Réaction supprimée'}, status=status.HTTP_200_OK)
         else:
-            # Si aucune réaction(activation)
-            reaction = Reaction(post=post, user=request.user, emoji=emoji)
-            reaction.save()
+            Reaction.objects.create(post=post, user=request.user, emoji=emoji)
+            action = 'added'
             logger.info(f"Réaction {emoji} ajoutée par {request.user.username} sur le post {post.title}")
-            return Response(ReactionSerializer(reaction).data, status=status.HTTP_201_CREATED)
+
+        # Compter toutes les réactions actuelles par emoji pour ce post
+        reaction_counts = Reaction.objects.filter(post=post).values('emoji').annotate(count=Count('id'))
+
+        # Formater sous forme de dictionnaire
+        counts = {item['emoji']: item['count'] for item in reaction_counts}
+
+        return Response({
+            'action': action,
+            'emoji': emoji,
+            'counts': counts
+        }, status=status.HTTP_200_OK)
+
 
 class AboutAuthorView(APIView):
     permission_classes = [permissions.AllowAny]  
