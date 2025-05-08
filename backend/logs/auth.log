@@ -6,3 +6,43 @@ Erreur lors du rafraÃ®chissement du token: 'int' object has no attribute 'id'
 Erreur lors du rafraÃ®chissement du token: Le jeton a Ã©tÃ© banni
 Échec de connexion pour fleuris: mot de passe incorrect
 Échec de connexion pour fleuris: mot de passe incorrect
+Erreur lors du rafraîchissement du token: Le jeton a été banni
+Échec de connexion: utilisateur mathisfloch29@gmx.fr non trouvé
+Échec de connexion: utilisateur mathisfloch29@gmx.fr non trouvé
+Échec de connexion pour mathis: mot de passe incorrect
+Tentative de rafraîchissement sans refresh token
+Tentative de déconnexion sans refresh token
+Échec de connexion: utilisateur mathisfloch29@gmx.fr non trouvé
+Tentative de rafraîchissement sans refresh token
+Tentative de déconnexion sans refresh token
+<<<<<<< HEAD
+Tentative de rÃ©initialisation pour email non trouvÃ©: Ismabouloukt@gmail.com
+Ã‰chec de connexion pour Mouboutous: mot de passe incorrect
+Tentative de dÃ©connexion sans refresh token
+Ã‰chec de connexion pour Mouboutous: mot de passe incorrect
+Tentative de dÃ©connexion sans refresh token
+Ã‰chec de connexion pour Mouboutous: mot de passe incorrect
+Tentative de dÃ©connexion sans refresh token
+Ã‰chec de connexion pour Mouboutous: mot de passe incorrect
+Tentative de dÃ©connexion sans refresh token
+Ã‰chec de connexion: utilisateur mouboutous non trouvÃ©
+Tentative de dÃ©connexion sans refresh token
+=======
+Échec de connexion: utilisateur wptc2 non trouvé
+Tentative de rafraîchissement sans refresh token
+Échec de connexion: utilisateur wptc2 non trouvé
+Tentative de rafraîchissement sans refresh token
+Échec de connexion: utilisateur wptc2 non trouvé
+Tentative de rafraîchissement sans refresh token
+Erreur lors du rafraîchissement du token: Le jeton a été banni
+Erreur lors du rafraîchissement du token: Le jeton a été banni
+Erreur lors du rafraîchissement du token: Le jeton a été banni
+>>>>>>> origin/William
+Échec de connexion pour mathis: mot de passe incorrect
+Erreur lors de la déconnexion: Le jeton a été banni
+Erreur lors de la déconnexion: Le jeton a été banni
+Erreur lors de la déconnexion: Le jeton a été banni
+Échec de connexion: utilisateur mathisfloch29@gmx.fr non trouvé
+Erreur lors de la déconnexion: Le jeton a été banni
+Erreur lors de la déconnexion: Le jeton a été banni
+Échec de connexion pour mathis: mot de passe incorrect

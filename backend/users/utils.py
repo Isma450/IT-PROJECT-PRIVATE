@@ -8,7 +8,7 @@ from .models import User, PasswordResetToken
 
 def send_reset_email(user, token):
     subject = "Réinitialisation de votre mot de passe"
-    reset_url = f"http://localhost:3000/reset-password/{token}/"
+    reset_url = f"http://localhost:5173/reset-password/{token}/"
     message = f"""
     Bonjour {user.username},
 
