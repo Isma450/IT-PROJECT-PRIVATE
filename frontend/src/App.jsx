@@ -7,7 +7,9 @@ import Register from './components/auth/Register'
 import ResetPassword from './components/auth/ResetPassword'
 import ResetPasswordConfirm from './components/auth/ResetPasswordConfirm'
 import Profile from './pages/Profile'
+import CreatePost from './pages/CreatePost'
 import ProtectedRoute from './components/auth/ProtectedRoute'
+import AdminRoute from './components/auth/AdminRoute'
 
 function App() {
   return (
@@ -26,6 +28,10 @@ function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/profile" element={<Profile />} />
                 {/* Autres routes protégées */}
+              </Route>
+              
+              <Route element={<AdminRoute />}>
+                <Route path="/create-post" element={<CreatePost />} />
               </Route>
             </Routes>
           </main>
