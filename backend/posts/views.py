@@ -10,6 +10,7 @@ from users.models import User
 from .permissions import IsAuthenticatedByRefreshToken
 from users.serializers import UserSerializer
 import logging
+from django.db.models import Count
 
 logger = logging.getLogger('posts')
 
@@ -78,7 +79,7 @@ class CommentCreateView(APIView):
         logger.warning(f"Échec de la création du commentaire : {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-from django.db.models import Count
+
 
 class ReactionToggleView(APIView):
     permission_classes = [IsAuthenticatedByRefreshToken]  
@@ -87,31 +88,17 @@ class ReactionToggleView(APIView):
         post = get_object_or_404(Post, pk=pk, published_at__lte=timezone.now())
 
         if emoji not in dict(Reaction.EMOJI_CHOICES).keys():
-            logger.warning(f"Emoji invalide {emoji} par {request.user.username}")
             return Response({'error': 'Emoji invalide'}, status=status.HTTP_400_BAD_REQUEST)
         
         reaction = Reaction.objects.filter(post=post, user=request.user, emoji=emoji).first()
         if reaction:
             reaction.delete()
-            action = 'removed'
-            logger.info(f"Réaction {emoji} supprimée par {request.user.username} sur le post {post.title}")
         else:
             Reaction.objects.create(post=post, user=request.user, emoji=emoji)
-            action = 'added'
-            logger.info(f"Réaction {emoji} ajoutée par {request.user.username} sur le post {post.title}")
 
-        # Compter toutes les réactions actuelles par emoji pour ce post
-        reaction_counts = Reaction.objects.filter(post=post).values('emoji').annotate(count=Count('id'))
-
-        # Formater sous forme de dictionnaire
-        counts = {item['emoji']: item['count'] for item in reaction_counts}
-
-        return Response({
-            'action': action,
-            'emoji': emoji,
-            'counts': counts
-        }, status=status.HTTP_200_OK)
-
+        
+        serializer = PostSerializer(post, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class AboutAuthorView(APIView):
     permission_classes = [permissions.AllowAny]  
