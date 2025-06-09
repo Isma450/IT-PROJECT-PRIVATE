@@ -1,10 +1,13 @@
 from django.urls import path
 from .views import (
     PostListView, PostDetailView, PostCreateView, PostUpdateView,
-    CommentCreateView, ReactionToggleView, AboutAuthorView , TagListView
+    CommentCreateView, ReactionToggleView, AboutAuthorView , TagListView ,  SuggestImprovementsView
 )
 
 urlpatterns = [
+    
+    path('<int:pk>/suggestions/', SuggestImprovementsView.as_view(), name='post-suggestions'),
+
     path('', PostListView.as_view(), name='post_list'),
    
     path('<int:pk>/', PostDetailView.as_view(), name='post_detail'),

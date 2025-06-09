@@ -61,6 +61,8 @@ TEMPLATES = [
     },
 ]
 
+OPENROUTER_API_KEY = config('OPENROUTER_API_KEY')
+
 # Configuration PostgreSQL
 DATABASES = {
     'default': {
