@@ -8,6 +8,7 @@ import ResetPassword from './components/auth/ResetPassword'
 import ResetPasswordConfirm from './components/auth/ResetPasswordConfirm'
 import Profile from './pages/Profile'
 import CreatePost from './pages/CreatePost'
+import EditPost from './pages/EditPost'
 import BlogCreations from './pages/BlogCreations'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import AdminRoute from './components/auth/AdminRoute'
@@ -28,6 +29,7 @@ function App() {
               <Route path="/reset-password/:token" element={<ResetPasswordConfirm />} />
               <Route path="/blog" element={<BlogCreations />} />
               <Route path="/posts/:id" element={<PostDetail />} />
+              <Route path="/blog/:id" element={<PostDetail />} />
 
               
               <Route element={<ProtectedRoute />}>
@@ -37,6 +39,7 @@ function App() {
               
               <Route element={<AdminRoute />}>
                 <Route path="/create-post" element={<CreatePost />} />
+                <Route path="/blog/:id/edit" element={<EditPost />} />
               </Route>
             </Routes>
           </main>
