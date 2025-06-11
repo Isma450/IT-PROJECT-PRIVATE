@@ -2,6 +2,18 @@ from rest_framework import serializers
 from .models import Post, Comment, Reaction , Tag
 from users.serializers import UserSerializer
 
+class SuggestionSerializer(serializers.Serializer):
+    """
+    Serializer pour chaque suggestion d'amélioration.
+    Contient la plage de caractères, le texte original et la proposition.
+    """
+    range = serializers.DictField(
+        child=serializers.IntegerField(),
+        help_text="{\"start\": int, \"end\": int}"
+    )
+    original = serializers.CharField(help_text="Segment de texte original")
+    proposal = serializers.CharField(help_text="Proposition d'amélioration")
+
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
@@ -68,3 +80,4 @@ class PostSerializer(serializers.ModelSerializer):
                 defaults={'slug': tag_name.lower().replace(' ', '-')}
             )
             post.tags.add(tag)
+
