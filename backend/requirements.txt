@@ -1,0 +1,36 @@
+Django==5.2
+djangorestframework==3.16.0
+djangorestframework-simplejwt==5.5.0
+django-cors-headers==4.7.0
+django-ratelimit==4.1.0
+django-redis==5.4.0
+python-decouple==3.8
+openai==1.84.0
+tiktoken==0.9.0
+httpx==0.28.1
+httpcore==1.0.9
+pydantic==2.11.5
+pydantic-core==2.33.2
+jiter==0.10.0
+redis==5.2.1
+psycopg2-binary==2.9.10
+
+# Utilitaires HTTP et parsing
+requests==2.32.3
+urllib3==2.4.0
+certifi==2025.4.26
+charset-normalizer==3.4.2
+idna==3.10
+anyio==4.9.0
+sniffio==1.3.1
+h11==0.16.0
+
+# Divers
+annotated-types==0.7.0
+typing-extensions==4.14.0
+typing-inspection==0.4.1
+regex==2024.11.6
+tqdm==4.67.1
+sqlparse==0.5.3
+distro==1.9.0
+PyJWT==2.9.0
