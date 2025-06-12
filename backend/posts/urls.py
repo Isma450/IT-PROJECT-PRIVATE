@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    PostListView, PostDetailView, PostCreateView, PostUpdateView,
+    PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView,
     CommentCreateView, ReactionToggleView, AboutAuthorView , TagListView ,  SuggestImprovementsView
 )
 
