@@ -68,12 +68,7 @@ OPENROUTER_API_KEY = config('OPENROUTER_API_KEY')
 DATABASE_URL = config("DATABASE_URL", default=None)
 
 if DATABASE_URL:
-    # Utilisé en production sur Render
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
-    }
-else:
-    # Utilisé en local
+     # Utilisé en local
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -84,6 +79,12 @@ else:
             'PORT': config('DATABASE_PORT', default='5432'),
         }
     }
+else:
+    # Utilisé en production sur Render
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
+    }
+   
 
 # Configuration REST Framework
 REST_FRAMEWORK = {
@@ -192,15 +193,24 @@ LOGGING = {
 }
 
 # Configuration du cache avec Redis
-CACHES = {
+USE_REDIS = config('USE_REDIS', default=False, cast=bool)
+
+if USE_REDIS:
+    CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': 'redis://127.0.0.1:6379/1',  
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
+     }
+  } 
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
     }
-}
 
 
 # Autres
