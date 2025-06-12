@@ -21,7 +21,6 @@ from django.db.models import Count
 
 logger = logging.getLogger('posts')
 
-# Limites de tokens pour réduire les coûts
 MAX_INPUT_TOKENS = 3000
 MAX_RESPONSE_TOKENS = 500
 ENCODING_NAME = "cl100k_base"
@@ -53,11 +52,9 @@ class SuggestImprovementsView(APIView):
     permission_classes = [IsAuthenticatedByRefreshToken, permissions.IsAdminUser]
 
     def post(self, request, pk):
-        # Récupérer et vérifier l'auteur
         post = get_object_or_404(Post, pk=pk, author=request.user)
         original_text = request.data.get("text", post.content)
 
-        # Tronquer pour limiter la consommation de tokens
         safe_text = truncate_text(original_text, MAX_INPUT_TOKENS)
 
         # Construire un prompt clair pour que le modèle renvoie uniquement le texte réécrit
@@ -69,7 +66,6 @@ class SuggestImprovementsView(APIView):
         )
 
         try:
-            # Appel à l'endpoint completions de Deepseek
             response = openai_client.completions.create(
                 model="deepseek/deepseek-r1-0528:free",
                 prompt=prompt,
@@ -88,7 +84,6 @@ class SuggestImprovementsView(APIView):
                     status=status.HTTP_502_BAD_GATEWAY
                 )
 
-            # Répondre dans la propriété "réponse"
             return Response({"réponse": rewritten}, status=status.HTTP_200_OK)
 
         except RateLimitError as e:
@@ -173,6 +168,25 @@ class PostUpdateView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         logger.warning(f"Échec de la mise à jour du post : {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PostDeleteView(APIView):
+    """
+    DELETE /api/posts/<pk>/delete/
+    Supprime un post si l'utilisateur est l'auteur ou un superuser.
+    """
+    permission_classes = [IsAuthenticatedByRefreshToken, permissions.IsAdminUser]
+
+    def delete(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        if post.author != request.user and not request.user.is_superuser:
+            return Response(
+                {"error": "Vous n’êtes pas autorisé à supprimer ce post."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        post.delete()
+        logger.info(f"Post {pk} supprimé par {request.user.username}")
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class CommentCreateView(APIView):
     permission_classes = [IsAuthenticatedByRefreshToken]  
