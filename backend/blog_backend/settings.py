@@ -113,6 +113,13 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_SSL_CONTEXT = ssl._create_unverified_context()
 
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'it-project-private.onrender.com' 
+]
+
+
 # Configuration CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
