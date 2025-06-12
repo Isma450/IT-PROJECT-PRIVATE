@@ -117,6 +117,7 @@ EMAIL_SSL_CONTEXT = ssl._create_unverified_context()
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
+    "https://it-project-private.onrender.com",
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
