@@ -9,7 +9,7 @@ const Home = () => {
       {/* En-tête */}
       <div className="mb-16 text-center">
         <h1 className="text-5xl font-bold mb-6 gradient-text">
-          IT-PROJECT
+          Moboutu
         </h1>
         <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
           blog

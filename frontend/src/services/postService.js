@@ -114,6 +114,31 @@ const postService = {
         : { error: "Erreur de connexion au serveur" };
     }
   },
+
+  explainPost: async (postId, text) => {
+    try {
+      const response = await axiosInstance.post(
+        `${API_URL}/posts/${postId}/suggestions/`,
+        { text },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 403) {
+        throw { error: "Fonctionnalité réservée aux administrateurs" };
+      }
+      if (error.response?.status === 404) {
+        throw { error: "Service d'explication temporairement indisponible" };
+      }
+      throw error.response
+        ? error.response.data
+        : { error: "Erreur de connexion au serveur" };
+    }
+  },
 };
 
 export default postService;
