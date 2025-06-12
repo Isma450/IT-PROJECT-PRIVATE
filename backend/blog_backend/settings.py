@@ -5,6 +5,7 @@ from decouple import config
 import logging
 import ssl
 from django.core.mail.backends.smtp import EmailBackend
+import dj_database_url
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -64,16 +65,25 @@ TEMPLATES = [
 OPENROUTER_API_KEY = config('OPENROUTER_API_KEY')
 
 # Configuration PostgreSQL
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME'),
-        'USER': config('DATABASE_USER'),
-        'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST'),
-        'PORT': config('DATABASE_PORT'),
+DATABASE_URL = config("DATABASE_URL", default=None)
+
+if DATABASE_URL:
+    # Utilisé en production sur Render
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
     }
-}
+else:
+    # Utilisé en local
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DATABASE_NAME', default='blog'),
+            'USER': config('DATABASE_USER', default='postgres'),
+            'PASSWORD': config('DATABASE_PASSWORD', default='postgres'),
+            'HOST': config('DATABASE_HOST', default='localhost'),
+            'PORT': config('DATABASE_PORT', default='5432'),
+        }
+    }
 
 # Configuration REST Framework
 REST_FRAMEWORK = {
